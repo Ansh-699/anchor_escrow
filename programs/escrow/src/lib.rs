@@ -4,10 +4,10 @@
 use anchor_lang::prelude::*;
 use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token::{
-    transfer, close_account, CloseAccount, Mint, TokenAccount, Token, Transfer,
+    close_account, transfer, CloseAccount, Mint, Token, TokenAccount, Transfer,
 };
 
-declare_id!("9LmrznqPdcksZKcggQx6oBxVum6sSXRPLJUwfFhaekJ");
+declare_id!("5NDT7P72bHDisEmvmDa7CzqVAyGEnBG3ZQ8M6H36mWCg");
 
 #[program]
 pub mod escrow_anchor {
@@ -34,8 +34,10 @@ pub mod escrow_anchor {
             to: ctx.accounts.vault.to_account_info(),
             authority: ctx.accounts.maker.to_account_info(),
         };
-        let cpi_ctx =
-            CpiContext::new(ctx.accounts.token_program.to_account_info(), transfer_accounts);
+        let cpi_ctx = CpiContext::new(
+            ctx.accounts.token_program.to_account_info(),
+            transfer_accounts,
+        );
         transfer(cpi_ctx, token_a_offered_amount)?;
 
         Ok(())
@@ -126,7 +128,6 @@ pub mod escrow_anchor {
         Ok(())
     }
 }
-
 
 #[derive(Accounts)]
 #[instruction(id: u64)]
@@ -242,7 +243,6 @@ pub struct TakeEscrow<'info> {
     pub token_program: Program<'info, Token>,
 }
 
-
 #[account]
 #[derive(InitSpace)]
 pub struct EscrowState {
@@ -255,7 +255,6 @@ pub struct EscrowState {
     pub vault: Pubkey,
     pub bump: u8,
 }
-
 
 #[error_code]
 pub enum EscrowError {
